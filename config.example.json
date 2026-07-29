@@ -1,0 +1,11 @@
+{
+  "_comment": "Copy this to config.json (gitignored) and edit paths. config.json is never committed.",
+  "kb": {
+    "vaultPath": "C:/path/to/your/ObsidianVault",
+    "smartEnvDir": ".smart-env/multi",
+    "embeddingModel": "TaylorAI/bge-micro-v2",
+    "embeddingDim": 384,
+    "includePrefix": "20_Permanent/",
+    "excludeTitles": ["Template_Permanent.md"]
+  }
+}

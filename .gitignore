@@ -1,0 +1,20 @@
+# dependencies
+node_modules/
+
+# private config (points to a local Obsidian vault, etc.)
+/config.json
+
+# private / generated data — never publish note contents, embeddings, or coordinates
+/data/*
+!/data/.gitkeep
+/out/*
+!/out/.gitkeep
+
+# logs / os
+*.log
+.DS_Store
+Thumbs.db
+
+# Agent loader bridges (contain local vault paths — never publish)
+/AGENTS.md
+/CLAUDE.md

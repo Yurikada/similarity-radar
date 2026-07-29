@@ -1,0 +1,25 @@
+{
+  "name": "similarity-radar",
+  "version": "0.1.0",
+  "description": "A landscape/radar visualization built from high-dimensional similarity: project documents (text embeddings) or assets (financial factors) to 2D, then read structure through rotation-invariant coordinates and a density surface. A study of MDS vs t-SNE, rotation invariance, KDE, and temporal alignment.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "kb:matrix": "node src/kb/00-feature-matrix.mjs"
+  },
+  "keywords": [
+    "dimensionality-reduction",
+    "mds",
+    "t-sne",
+    "pca",
+    "kde",
+    "embeddings",
+    "visualization"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "yahoo-finance2": "^4.0.0"
+  }
+}

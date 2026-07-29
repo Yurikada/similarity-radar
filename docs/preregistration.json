@@ -1,0 +1,51 @@
+{
+  "stage": "C0",
+  "frozen_at": "2026-07-29T07:51:03.417Z",
+  "hypothesis": "The effect size of choosing a stress objective (max pairwise Procrustes disparity across the four C1 objectives) is a monotone increasing function of CV = sd(d)/mean(d) of the distance matrix fed to MDS. Prediction on record: CV(kb) < CV(stocks), therefore effect(kb) < effect(stocks). Not to be revised after seeing C1 maps.",
+  "objectives_frozen": [
+    "raw stress",
+    "log-distance",
+    "kNN-weighted",
+    "non-metric (monotone)"
+  ],
+  "sensitivity_frozen": {
+    "knn_gamma": [
+      0.01,
+      0.05,
+      0.1
+    ],
+    "knn_k": [
+      5,
+      10,
+      20
+    ]
+  },
+  "pass_thresholds": {
+    "disparity": 0.01,
+    "stress1": 0.005,
+    "trust": 0.01,
+    "cont": 0.01
+  },
+  "distance_stats": {
+    "stocks": {
+      "n": 145,
+      "pairs": 10440,
+      "mean": 3.955857329192776,
+      "sd": 1.5701309806794572,
+      "cv": 0.3969129445322678,
+      "min": 0.5382681431869412,
+      "p50": 3.67840769259984,
+      "max": 10.668964529782164
+    },
+    "kb": {
+      "n": 86,
+      "pairs": 3655,
+      "mean": 0.46976606910184443,
+      "sd": 0.08045342270196718,
+      "cv": 0.17126273691028335,
+      "min": 0.11111636118427247,
+      "p50": 0.47273109857964984,
+      "max": 0.6592519710879056
+    }
+  }
+}
