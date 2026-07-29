@@ -218,7 +218,7 @@
       groups.grid.append(el("line",{x1:75,y1:345,x2:905,y2:345,stroke:"rgba(164,191,222,.12)"}));
       groups.grid.append(el("line",{x1:490,y1:40,x2:490,y2:650,stroke:"rgba(164,191,222,.12)"}));
       centers.slice(0,3).forEach((c,i) => {
-        const [x,y]=project({x:c[0],y:c[1]});
+        const [x,y]=project({c:i,x:c[0],y:c[1]});
         groups.heat.append(el("circle",{cx:x,cy:y,r:method==="tsne"?132:165,fill:`url(#heat${"ABC"[i]})`}));
       });
       [[0,4],[4,8],[8,12],[1,13]].forEach(([a,b]) => {
@@ -234,7 +234,7 @@
         groups.points.append(g);
       });
       centers.forEach((c,i) => {
-        const [x,y]=project({x:c[0],y:c[1]});
+        const [x,y]=project({c:i,x:c[0],y:c[1]});
         const t=el("text",{x,y:y-82,fill:colors[i],"font-size":12,"font-weight":700,"letter-spacing":2,"text-anchor":"middle"});
         t.textContent=labels[i]; groups.labels.append(t);
       });
