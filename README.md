@@ -1,5 +1,9 @@
 # similarity-radar
 
+[**Open the interactive concept demo**](https://yurikada.github.io/similarity-radar/)
+
+![Similarity Radar interactive concept demo](docs/assets/similarity-radar-overview.png)
+
 A landscape / "radar" visualization built from **high-dimensional similarity**.
 
 Given a set of items described by high-dimensional vectors — documents via text

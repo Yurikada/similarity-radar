@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Privacy-safe interactive demo of rotation-invariant similarity landscapes.">
+  <title>Similarity Radar — interactive concept demo</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #07111f;
+      --panel: rgba(12, 25, 43, .88);
+      --line: rgba(164, 191, 222, .18);
+      --text: #f4f8ff;
+      --muted: #93a7bf;
+      --cyan: #57d6e7;
+      --violet: #a78bfa;
+      --amber: #f4bd62;
+      --green: #5ed6a0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 5%, rgba(87, 214, 231, .13), transparent 28rem),
+        radial-gradient(circle at 90% 90%, rgba(167, 139, 250, .12), transparent 30rem),
+        var(--bg);
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      padding: 1.15rem 2rem;
+      border-bottom: 1px solid var(--line);
+      background: rgba(7, 17, 31, .78);
+      backdrop-filter: blur(16px);
+    }
+    .brand { display: flex; align-items: center; gap: .75rem; }
+    .mark {
+      width: 2.2rem; height: 2.2rem; border: 1px solid rgba(87,214,231,.55);
+      border-radius: 50%; display: grid; place-items: center; color: var(--cyan);
+      box-shadow: 0 0 24px rgba(87,214,231,.2);
+    }
+    h1 { margin: 0; font-size: 1rem; letter-spacing: .15em; text-transform: uppercase; }
+    .tag { color: var(--muted); font-size: .76rem; letter-spacing: .08em; }
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 22rem;
+      gap: 1rem;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+    .panel {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 1.1rem;
+      box-shadow: 0 18px 60px rgba(0,0,0,.28);
+      overflow: hidden;
+    }
+    .toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; padding: 1rem 1.1rem; border-bottom: 1px solid var(--line);
+    }
+    .tabs { display: flex; gap: .35rem; }
+    button {
+      border: 1px solid var(--line);
+      border-radius: .7rem;
+      padding: .55rem .8rem;
+      color: var(--muted);
+      background: rgba(255,255,255,.025);
+      cursor: pointer;
+      font: inherit;
+    }
+    button:hover, button.active { color: var(--text); border-color: rgba(87,214,231,.48); background: rgba(87,214,231,.1); }
+    .plot-wrap { position: relative; min-height: 690px; }
+    svg { display: block; width: 100%; height: 690px; }
+    .legend {
+      position: absolute; left: 1rem; bottom: 1rem;
+      display: flex; flex-wrap: wrap; gap: .7rem;
+      padding: .65rem .8rem; border: 1px solid var(--line);
+      border-radius: .75rem; background: rgba(7,17,31,.82); font-size: .76rem;
+    }
+    .key { display: flex; align-items: center; gap: .35rem; color: var(--muted); }
+    .dot { width: .55rem; height: .55rem; border-radius: 50%; }
+    aside { display: flex; flex-direction: column; gap: 1rem; }
+    .section { padding: 1.1rem; }
+    h2 { margin: 0 0 .35rem; font-size: 1.03rem; }
+    .eyebrow { color: var(--cyan); font-size: .7rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+    p { color: var(--muted); line-height: 1.55; font-size: .88rem; }
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: .65rem; margin-top: 1rem; }
+    .metric { padding: .8rem; border: 1px solid var(--line); border-radius: .8rem; background: rgba(255,255,255,.025); }
+    .metric strong { display: block; font-size: 1.45rem; }
+    .metric span { color: var(--muted); font-size: .7rem; }
+    .callout { border-left: 3px solid var(--green); padding-left: .85rem; }
+    input[type="range"] { width: 100%; accent-color: var(--cyan); }
+    .range-row { display: flex; justify-content: space-between; color: var(--muted); font-size: .74rem; }
+    .pipeline { display: grid; gap: .55rem; margin-top: .8rem; }
+    .stage { display: grid; grid-template-columns: 1.7rem 1fr; gap: .55rem; align-items: center; color: var(--muted); font-size: .78rem; }
+    .stage b { display: grid; place-items: center; width: 1.65rem; height: 1.65rem; color: var(--cyan); border: 1px solid var(--line); border-radius: .5rem; }
+    footer { color: var(--muted); text-align: center; padding: 0 1rem 1.25rem; font-size: .72rem; }
+    @media (max-width: 960px) {
+      main { grid-template-columns: 1fr; }
+      aside { display: grid; grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      header { padding: 1rem; }
+      main { padding: .65rem; }
+      aside { display: flex; }
+      .toolbar { align-items: flex-start; flex-direction: column; }
+      .plot-wrap, svg { min-height: 540px; height: 540px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="mark">◎</div>
+      <div><h1>Similarity Radar</h1><div class="tag">rotation-invariant landscape readout</div></div>
+    </div>
+    <div class="tag">privacy-safe synthetic demo</div>
+  </header>
+  <main>
+    <section class="panel">
+      <div class="toolbar">
+        <div>
+          <div class="eyebrow">Landscape</div>
+          <h2 id="plot-title">MDS projection · global structure</h2>
+        </div>
+        <div class="tabs" aria-label="Projection method">
+          <button class="active" data-method="mds">MDS</button>
+          <button data-method="pca">PCA</button>
+          <button data-method="tsne">t-SNE</button>
+        </div>
+      </div>
+      <div class="plot-wrap">
+        <svg id="plot" viewBox="0 0 980 690" role="img" aria-label="Synthetic similarity landscape">
+          <defs>
+            <radialGradient id="heatA"><stop offset="0" stop-color="#57d6e7" stop-opacity=".30"/><stop offset="1" stop-color="#57d6e7" stop-opacity="0"/></radialGradient>
+            <radialGradient id="heatB"><stop offset="0" stop-color="#a78bfa" stop-opacity=".28"/><stop offset="1" stop-color="#a78bfa" stop-opacity="0"/></radialGradient>
+            <radialGradient id="heatC"><stop offset="0" stop-color="#f4bd62" stop-opacity=".25"/><stop offset="1" stop-color="#f4bd62" stop-opacity="0"/></radialGradient>
+            <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <g id="grid"></g><g id="heat"></g><g id="links"></g><g id="points"></g><g id="labels"></g>
+        </svg>
+        <div class="legend">
+          <div class="key"><i class="dot" style="background:var(--cyan)"></i> sensing</div>
+          <div class="key"><i class="dot" style="background:var(--violet)"></i> modeling</div>
+          <div class="key"><i class="dot" style="background:var(--amber)"></i> decisions</div>
+          <div class="key"><i class="dot" style="background:var(--green)"></i> validation</div>
+        </div>
+      </div>
+    </section>
+    <aside>
+      <section class="panel section">
+        <div class="eyebrow">Invariant test</div>
+        <h2>Rotate the map</h2>
+        <p>The axes move, but pairwise distances and each point's radius percentile do not.</p>
+        <input id="rotation" type="range" min="0" max="180" value="0" aria-label="Map rotation">
+        <div class="range-row"><span>0°</span><strong id="angle">0°</strong><span>180°</span></div>
+        <div class="metrics">
+          <div class="metric"><strong id="distance">0.84</strong><span>selected distance</span></div>
+          <div class="metric"><strong id="radius">P82</strong><span>radius percentile</span></div>
+          <div class="metric"><strong>0.93</strong><span>neighborhood trust</span></div>
+          <div class="metric"><strong>3</strong><span>density regions</span></div>
+        </div>
+      </section>
+      <section class="panel section">
+        <div class="eyebrow">Reading rule</div>
+        <h2>Meaning lives in relationships</h2>
+        <p class="callout">Treat orientation as arbitrary. Read proximity, radial position, density, and aligned change.</p>
+        <div class="pipeline">
+          <div class="stage"><b>1</b><span>vectors → distances</span></div>
+          <div class="stage"><b>2</b><span>projection with stated trade-offs</span></div>
+          <div class="stage"><b>3</b><span>rotation-invariant radius</span></div>
+          <div class="stage"><b>4</b><span>density and whitespace</span></div>
+          <div class="stage"><b>5</b><span>clusters and validation</span></div>
+          <div class="stage"><b>6</b><span>aligned temporal change</span></div>
+        </div>
+      </section>
+    </aside>
+  </main>
+  <footer>This demo uses deterministic synthetic points only. No private notes, embeddings, securities data, or generated project output are included.</footer>
+  <script>
+    const svg = document.querySelector("#plot");
+    const groups = Object.fromEntries(["grid","heat","links","points","labels"].map(id => [id, document.querySelector("#"+id)]));
+    const colors = ["#57d6e7","#a78bfa","#f4bd62","#5ed6a0"];
+    const centers = [[-155,-80],[125,-115],[145,120],[-100,140]];
+    const labels = ["SENSING","MODELING","DECISIONS","VALIDATION"];
+    const points = Array.from({length: 32}, (_, i) => {
+      const c = i % 4, k = Math.floor(i / 4), a = (k * 1.77 + c * .42);
+      const spread = 28 + (k % 4) * 13;
+      return {c, x: centers[c][0] + Math.cos(a)*spread, y: centers[c][1] + Math.sin(a)*spread*.72, r: 4 + (i%3)};
+    });
+    let method = "mds";
+    const variants = {
+      mds: p => [p.x, p.y],
+      pca: p => [p.x*1.18 + p.y*.18, p.y*.72],
+      tsne: p => {
+        const [cx,cy]=centers[p.c]; return [cx*1.22+(p.x-cx)*.72, cy*1.18+(p.y-cy)*.68];
+      }
+    };
+    function el(name, attrs={}) {
+      const node = document.createElementNS("http://www.w3.org/2000/svg", name);
+      Object.entries(attrs).forEach(([k,v]) => node.setAttribute(k,v)); return node;
+    }
+    function render() {
+      Object.values(groups).forEach(g => g.replaceChildren());
+      const angle = Number(document.querySelector("#rotation").value);
+      document.querySelector("#angle").textContent = angle+"°";
+      const rad = angle*Math.PI/180, cs=Math.cos(rad), sn=Math.sin(rad);
+      const project = p => { const [x,y]=variants[method](p); return [490+x*cs-y*sn,345+x*sn+y*cs]; };
+      [90,180,270].forEach(r => groups.grid.append(el("circle",{cx:490,cy:345,r,fill:"none",stroke:"rgba(164,191,222,.15)","stroke-dasharray":"4 8"})));
+      groups.grid.append(el("line",{x1:75,y1:345,x2:905,y2:345,stroke:"rgba(164,191,222,.12)"}));
+      groups.grid.append(el("line",{x1:490,y1:40,x2:490,y2:650,stroke:"rgba(164,191,222,.12)"}));
+      centers.slice(0,3).forEach((c,i) => {
+        const [x,y]=project({x:c[0],y:c[1]});
+        groups.heat.append(el("circle",{cx:x,cy:y,r:method==="tsne"?132:165,fill:`url(#heat${"ABC"[i]})`}));
+      });
+      [[0,4],[4,8],[8,12],[1,13]].forEach(([a,b]) => {
+        const [x1,y1]=project(points[a]),[x2,y2]=project(points[b]);
+        groups.links.append(el("line",{x1,y1,x2,y2,stroke:"rgba(244,248,255,.25)","stroke-width":1.5,"stroke-dasharray":"5 7"}));
+      });
+      points.forEach((p,i) => {
+        const [x,y]=project(p);
+        const g=el("g");
+        g.append(el("circle",{cx:x,cy:y,r:p.r+7,fill:colors[p.c],"fill-opacity":".10"}));
+        g.append(el("circle",{cx:x,cy:y,r:p.r,fill:colors[p.c],stroke:"#07111f","stroke-width":2,filter:i===13?"url(#glow)":""}));
+        if(i===13) g.append(el("circle",{cx:x,cy:y,r:15,fill:"none",stroke:"#fff","stroke-width":1.4}));
+        groups.points.append(g);
+      });
+      centers.forEach((c,i) => {
+        const [x,y]=project({x:c[0],y:c[1]});
+        const t=el("text",{x,y:y-82,fill:colors[i],"font-size":12,"font-weight":700,"letter-spacing":2,"text-anchor":"middle"});
+        t.textContent=labels[i]; groups.labels.append(t);
+      });
+      document.querySelector("#distance").textContent = method==="tsne" ? "0.84*" : "0.84";
+      document.querySelector("#radius").textContent = "P82";
+    }
+    document.querySelector("#rotation").addEventListener("input", render);
+    document.querySelectorAll("[data-method]").forEach(btn => btn.addEventListener("click", () => {
+      method=btn.dataset.method;
+      document.querySelectorAll("[data-method]").forEach(b => b.classList.toggle("active",b===btn));
+      document.querySelector("#plot-title").textContent = {
+        mds:"MDS projection · global structure", pca:"PCA projection · linear baseline", tsne:"t-SNE projection · local neighborhoods"
+      }[method];
+      render();
+    }));
+    render();
+  </script>
+</body>
+</html>
