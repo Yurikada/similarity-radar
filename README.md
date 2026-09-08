@@ -1,5 +1,9 @@
 # similarity-radar
 
+高次元の類似度を2Dへ投影し、距離・半径・密度・時間変化から読む可視化ケーススタディです。
+
+公開デモは合成データで動きます。実ノートの本文・埋め込みは含めていません。投影で失われる情報もあるため、2Dで見つけた仮説は元の高次元データで確認します。
+
 [**Open the interactive concept demo**](https://yurikada.github.io/similarity-radar/)
 
 ![Similarity Radar interactive concept demo](docs/assets/similarity-radar-overview.png)
@@ -79,12 +83,13 @@ history.
 ## Run
 
 ```bash
-# KB domain
-cp config.example.json config.json   # then edit vaultPath
+npm ci
+# KB domain: requires existing Smart Connections embeddings for your own vault
+cp config.example.json config.json   # edit kb.vaultPath and embedding settings
 npm run kb:matrix                     # Stage A0
 ```
 
-Requires Node.js ≥ 20. No build step; plain ES modules.
+Requires Node.js ≥ 20. No build step; plain ES modules. The KB command reads existing Smart Connections embeddings; it does not generate embeddings from Markdown by itself. To inspect the synthetic concept demo locally, open `docs/index.html` in a browser.
 
 ## License
 
